@@ -4,6 +4,7 @@ import com.zhh.handsome.DataSource.Configuration;
 import com.zhh.handsome.Utils.MappedStatement;
 import com.zhh.handsome.Utils.TransactionFactory;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -31,6 +32,7 @@ public interface Executor {
     
     // 简单执行器实现
     class SimpleExecutor implements Executor {
+        //这里面其实不要Configuration也可以，写了反而有误导性，让人容易直接使用Configuration中的数据源去做jdbc操作了
         protected Configuration configuration;
         protected TransactionFactory.Transaction transaction;
         protected boolean closed;
@@ -49,6 +51,23 @@ public interface Executor {
         @Override
         public <E> List<E> queryList(MappedStatement ms, Object parameter) throws SQLException {
             // 这里应该实现SQL执行和结果映射的逻辑
+            /*try {
+                Connection connection = transaction.getConnection();
+                System.out.println("获取数据库连接: " + connection);
+                System.out.println("执行查询SQL: " + ms.getSql());
+                System.out.println("处理结果映射: " + ms.getResultHandler());
+                return null;
+            }catch (Exception e){
+                e.printStackTrace();
+                rollback( true);
+                close(false);
+                throw new RuntimeException(e);
+            }finally {
+                //提交事务
+                commit(true);
+                close(false);
+            }
+            */
             // 简化版本，实际应该使用PreparedStatement执行SQL并处理结果
             System.out.println("执行查询SQL: " + ms.getSql());
             return null; // 简化实现，实际应该返回结果集
